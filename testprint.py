@@ -14,16 +14,16 @@ ThermalPrinter = adafruit_thermal_printer.get_printer_class(1.11)
 # the RX pin if your board doesn't support 5V inputs.  If RX is left unconnected
 # the only loss in functionality is checking if the printer has paper--all other
 # functions of the printer will work.
-RX = board.RX
-TX = board.TX
+RX = board.GP1
+TX = board.GP0
 
 # Create a serial connection for the printer.  You must use the same baud rate
 # as your printer is configured (print a test page by holding the button
 # during power-up and it will show the baud rate).  Most printers use 19200.
-uart = busio.UART(TX, RX, baudrate=9600)
+printer_uart = busio.UART(TX, RX, baudrate=9600)
 
 # Create the printer instance.
-printer = ThermalPrinter(uart,  byte_delay_s=0.00057346, dot_feed_s=0.0021, dot_print_s=0.003)
+printer = ThermalPrinter(printer_uart,  byte_delay_s=0.00057346, dot_feed_s=0.0021, dot_print_s=0.003)
 
 # Initialize the printer.  Note this will take a few seconds for the printer
 # to warm up and be ready to accept commands (hence calling it explicitly vs.
