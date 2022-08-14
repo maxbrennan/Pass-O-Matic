@@ -5,30 +5,43 @@ import board
 import busio
 import adafruit_ds3231
 
+from scanner import Scanner
+from printer import Printer
+from hallpass import HallPass
+
+# Connect to the realtime clock
 i2c = busio.I2C(scl=board.GP27, sda=board.GP26)  # uses board.SCL and board.SDA
 rtc = adafruit_ds3231.DS3231(i2c)
 
-from scanner import Scanner
-
+# RX and TX pins for the board's serial port connected to the barcode scanner.
 SCAN_RX = board.GP5
 SCAN_TX = board.GP4
 barcode = Scanner(SCAN_TX, SCAN_RX)
 
-def print_time():
+# RX and TX pins for the board's serial port connected to the printer.
+PRINT_RX = board.GP1
+PRINT_TX = board.GP0
+printer = Printer(PRINT_TX, PRINT_RX, rtc)
+
+# The current date and time as a string
+def time_str():
     # Lookup table for names of days (nicer printing).
     days = ("Mon", "Tue", "Wed", "Thr", "Fri", "Sat", "Sun")
     months = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 
     t = rtc.datetime
+
+    str = ""
+
     # print(t)     # uncomment for debugging
-    print(
-        "The date is {}, {} {} {}".format(
+    str = str + "The date is {}, {} {} {}\n".format(
             days[int(t.tm_wday)], months[t.tm_mon - 1], t.tm_mday, t.tm_year
         )
-    )
-    print("The time is {}:{:02}:{:02}".format(t.tm_hour, t.tm_min, t.tm_sec))
+    str = str + "The time is {}:{:02}:{:02}".format(t.tm_hour, t.tm_min, t.tm_sec)
 
-print_time()
+    return str
+
+print(time_str())
 
 while True:
     scan = barcode.check_scan()
@@ -40,5 +53,11 @@ while True:
 
     if scan.type == "TIME":
         rtc.datetime = scan.data
-        print_time()    
+        print(time_str())
 
+    elif scan.type == "ID":
+        name = "NO NAME"
+        student = {"id": str(scan.data), "name": name}
+
+        hallpass = HallPass("F407 Hall Pass", student, rtc.datetime)
+        hallpass.print(printer)
