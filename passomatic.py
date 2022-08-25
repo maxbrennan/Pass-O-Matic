@@ -8,6 +8,7 @@ import adafruit_ds3231
 from scanner import Scanner
 from printer import Printer
 from hallpass import HallPass
+import roster
 
 # Connect to the realtime clock
 i2c = busio.I2C(scl=board.GP27, sda=board.GP26)  # uses board.SCL and board.SDA
@@ -53,11 +54,22 @@ while True:
 
     if scan.type == "TIME":
         rtc.datetime = scan.data
+
+        # Display the new time on the console
         print(time_str())
+        
+        # print the new time as a receipt
+        printer.print(time_str())
+        # Feed a few lines to see everything.
+        printer.feed(3)
+        
 
     elif scan.type == "ID":
-        name = "NO NAME"
-        student = {"id": str(scan.data), "name": name}
+        try:
+            name = roster.lookup[scan.data]
+        except KeyError:
+            name = None
+        student = {"id": scan.data, "name": name}
 
         hallpass = HallPass("F407 Hall Pass", student, rtc.datetime)
         hallpass.print(printer)
