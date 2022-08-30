@@ -62,6 +62,8 @@ while True:
         printer.print(time_str())
         # Feed a few lines to see everything.
         printer.feed(3)
+        time.sleep(3)
+        barcode.clear()
         
 
     elif scan.type == "ID":

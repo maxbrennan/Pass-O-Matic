@@ -39,6 +39,14 @@ class Scanner:
     def __init__(self, tx, rx) -> None:
         self._uart = busio.UART(tx, rx, baudrate=9600, timeout=0.01)
 
+    def clear(self) -> None:
+        data = self._uart.readline()
+    
+        while data is not None:
+            data = self._uart.readline()
+    
+        return None        
+
     def check_scan(self) -> Scan:
         data = self._uart.readline()
     
