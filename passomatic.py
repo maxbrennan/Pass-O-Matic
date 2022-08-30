@@ -64,14 +64,20 @@ while True:
         printer.feed(3)
         time.sleep(3)
         barcode.clear()
-        
+    
+    elif scan.type == "ROSTER":
+        print("Printing roster")
+        roster.print_all(printer)
+
+    elif scan.type == "ACTIVITY":
+        print("Printing activity report")
+        printer.print("ACTIVITY REPORT")
+        printer.feed(3)        
 
     elif scan.type == "ID":
-        try:
-            name = roster.lookup[scan.data]
-        except KeyError:
-            name = None
-        student = {"id": scan.data, "name": name}
-
+        student = roster.lookup(scan.data)
         hallpass = HallPass("F407 Hall Pass", student, rtc.datetime)
         hallpass.print(printer)
+
+    elif scan.type == "ERROR":
+        print("Scan error: " + scan.data)

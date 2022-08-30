@@ -28,7 +28,7 @@ class HallPass:
         name = None
         name_label = "Name: "
         if self.student is not None:
-            printer._set_timeout((printer._barcode_height + 40) * printer._dot_print_s)
+            #printer._set_timeout((printer._barcode_height + 40) * printer._dot_print_s)
             if self.student["id"]:
                 printer.print(str(self.student["id"]))
                 printer.print_barcode(str(self.student["id"]))

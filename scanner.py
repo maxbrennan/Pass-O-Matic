@@ -2,8 +2,8 @@ import busio
 import time
 
 class Scan:
-    def __init__(self, scan_string) -> None:
-        self._str = scan_string
+    def __init__(self, scan_string: str) -> None:
+        self._str = scan_string.upper()
         self.type = None
         
         # T scans = set current time in "TYYYYMMDDHHmmSS" format
@@ -16,6 +16,13 @@ class Scan:
             min = int(scan_string[11:13])
             sec = int(scan_string[13:15])
             self.data = time.struct_time((year, month, day, hour, min, sec, -1, -1, -1))
+
+        elif scan_string.upper().startswith("ACTIVITY"):
+            self.type = "ACTIVITY"
+
+        elif scan_string.upper().startswith("ROSTER"):
+            self.type = "ROSTER"
+
         else:
             try:
                 # simple numbers are IDs
@@ -23,7 +30,8 @@ class Scan:
                 self.type = "ID"
 
             except:
-                pass
+                self.data = scan_string
+                self.type = "ERROR"
 
     def __str__(self) -> str:
         if (self.type == "ID"):
