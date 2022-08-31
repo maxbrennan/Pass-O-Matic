@@ -9,6 +9,7 @@ from scanner import Scanner
 from printer import Printer
 from hallpass import HallPass
 import roster
+import activity
 
 # Connect to the realtime clock
 i2c = busio.I2C(scl=board.GP27, sda=board.GP26)  # uses board.SCL and board.SDA
@@ -26,8 +27,7 @@ printer = Printer(PRINT_TX, PRINT_RX, rtc)
 
 # The current date and time as a string
 def time_str():
-    # Lookup table for names of days (nicer printing).
-    days = ("Mon", "Tue", "Wed", "Thr", "Fri", "Sat", "Sun")
+    # Lookup table for names of months (nicer printing).
     months = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 
     t = rtc.datetime
@@ -35,8 +35,8 @@ def time_str():
     str = ""
 
     # print(t)     # uncomment for debugging
-    str = str + "The date is {}, {} {} {}\n".format(
-            days[int(t.tm_wday)], months[t.tm_mon - 1], t.tm_mday, t.tm_year
+    str = str + "The date is {} {} {}\n".format(
+            months[t.tm_mon - 1], t.tm_mday, t.tm_year
         )
     str = str + "The time is {}:{:02}:{:02}".format(t.tm_hour, t.tm_min, t.tm_sec)
 
@@ -76,6 +76,7 @@ while True:
 
     elif scan.type == "ID":
         student = roster.lookup(scan.data)
+        activity.record_student(student, rtc.datetime)
         hallpass = HallPass("F407 Hall Pass", student, rtc.datetime)
         hallpass.print(printer)
 

@@ -1,5 +1,3 @@
-import circuitpython_csv as csv
-
 # Find a student's name given their id number
 def lookup(id: int) -> str:
     with open("roster.csv", mode="r", encoding="utf-8") as csvfile:
