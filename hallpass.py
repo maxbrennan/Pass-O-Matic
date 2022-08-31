@@ -1,8 +1,9 @@
 class HallPass:
-    def __init__(self, title, student, time) -> None:
+    def __init__(self, title, student, time, recorded) -> None:
         self.student = student
         self.time = time
         self.title = title
+        self.recorded = recorded
 
     def print(self, printer) -> bool:
         # if not printer.has_paper():
@@ -43,7 +44,12 @@ class HallPass:
         
         printer.justify = printer.JUSTIFY_CENTER
         printer.feed(2)
-        printer.print("________________________________")
+
+        record_mark = ">"
+        if (self.recorded):
+            record_mark = "_"
+
+        printer.print("{:_<32}".format(record_mark))
         printer.print("Not valid outside of F400")
         printer.print("unless signed by teacher")
 
