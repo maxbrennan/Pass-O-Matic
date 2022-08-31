@@ -76,8 +76,8 @@ while True:
 
     elif scan.type == "ID":
         student = roster.lookup(scan.data)
-        activity.record_student(student, rtc.datetime)
-        hallpass = HallPass("F407 Hall Pass", student, rtc.datetime)
+        recorded = activity.record_student(student, rtc.datetime)
+        hallpass = HallPass("F407 Hall Pass", student, rtc.datetime, recorded)
         hallpass.print(printer)
 
     elif scan.type == "ERROR":
