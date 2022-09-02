@@ -3,7 +3,7 @@ import digitalio
 import storage
 
 usb_connected = digitalio.DigitalInOut(board.GP24)
-usb_connected.directon = digitalio.Direction.INPUT
+usb_connected.direction = digitalio.Direction.INPUT
 
 if usb_connected.value == True:
     storage.remount("/", True)
